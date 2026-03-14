@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UnBroken | The Signal Behind the Noise</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: #203445;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    padding: 30px 16px;
+    color: #203445;
+  }
+
+  .card {
+    background: #fff;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 36px 40px 24px;
+    text-align: center;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .card-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #203445;
+    margin-bottom: 8px;
+    display: inline-block;
+    border-bottom: 2px solid #5da0af;
+    padding-bottom: 6px;
+  }
+
+  .card-header .subtitle {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+
+  .progress-wrap { padding: 16px 40px 0; }
+
+  .progress-bar-track {
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #5da0af, #acc95d);
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-align: center;
+    margin-top: 6px;
+    margin-bottom: 8px;
+  }
+
+  .step-section {
+    display: none;
+    padding: 36px 40px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .step-section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 { font-size: 1.3rem; font-weight: 700; color: #203445; margin-bottom: 16px; }
+  h3 { font-size: 1.05rem; font-weight: 600; color: #203445; margin: 20px 0 10px; }
+  p { line-height: 1.7; color: #333; margin-bottom: 14px; }
+
+  .callout-quote {
+    border-left: 4px solid #5da0af;
+    background: #e8f4f6;
+    padding: 16px 20px;
+    border-radius: 0 6px 6px 0;
+    margin: 20px 0;
+    font-style: italic;
+    color: #203445;
+    line-height: 1.7;
+  }
+
+  .key-concept {
+    border: 2px solid #dfb852;
+    background: #fef9f2;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+
+  .key-concept .concept-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #dfb852;
+    margin-bottom: 8px;
+  }
+
+  .key-concept p { margin: 0; font-size: 0.95rem; }
+
+  /* Module image */
+  .module-image {
+    width: 100%;
+    max-height: 260px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 16px 0 24px;
+    display: block;
+  }
+
+  /* Checkbox inventory */
+  .checkbox-list { margin: 16px 0; }
+
+  .checkbox-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+  }
+
+  .checkbox-item:hover { background: #e8f4f6; }
+  .checkbox-item.checked { background: #e8f4f6; border-color: #5da0af; }
+
+  .checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 3px;
+    accent-color: #5da0af;
+    cursor: pointer;
+  }
+
+  .checkbox-item .item-label {
+    font-weight: 600;
+    color: #203445;
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .checkbox-item .item-desc {
+    font-size: 0.85rem;
+    color: #6c757d;
+    line-height: 1.5;
+  }
+
+  .check-reveal {
+    display: none;
+    background: #e8f4f6;
+    border-left: 4px solid #5da0af;
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin-top: 16px;
+    color: #203445;
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  .check-reveal.visible { display: block; animation: fadeIn 0.3s ease; }
+
+  /* Myth/Truth cards */
+  .myth-truth-cards { margin: 20px 0; }
+
+  .mt-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    border: 1px solid #e9ecef;
+  }
+
+  .mt-myth {
+    background: #fff5f5;
+    padding: 16px;
+    border-right: 1px solid #e9ecef;
+  }
+
+  .mt-truth {
+    background: #f0f9f4;
+    padding: 16px;
+  }
+
+  .mt-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  .mt-myth .mt-label { color: #c0392b; }
+  .mt-truth .mt-label { color: #2e7d8a; }
+
+  .mt-myth p { font-size: 0.875rem; color: #555; margin: 0; line-height: 1.6; text-decoration: line-through; text-decoration-color: #e05c5c; }
+  .mt-truth p { font-size: 0.875rem; color: #333; margin: 0; line-height: 1.6; }
+
+  /* Signal Cards */
+  .signal-cards { display: grid; gap: 14px; margin: 20px 0; }
+
+  .signal-card {
+    border-radius: 8px;
+    padding: 18px 20px;
+    border-left: 5px solid;
+  }
+
+  .signal-card.fear     { background: #fff5f5; border-color: #e05c5c; }
+  .signal-card.anxiety  { background: #fff8ee; border-color: #f0a030; }
+  .signal-card.intuition { background: #f0f9f4; border-color: #5da0af; }
+
+  .signal-card-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+
+  .signal-face {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .signal-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
+  .signal-card.fear .signal-title     { color: #c0392b; }
+  .signal-card.anxiety .signal-title  { color: #d08020; }
+  .signal-card.intuition .signal-title { color: #2e7d8a; }
+
+  .signal-card ul {
+    padding-left: 18px;
+    color: #444;
+    line-height: 1.9;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+  }
+
+  .signal-card p { font-size: 0.9rem; color: #444; margin-bottom: 10px; }
+
+  .response-line {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 0;
+    color: #203445;
+  }
+
+  .signal-card.fear .response-line     { color: #c0392b; }
+  .signal-card.anxiety .response-line  { color: #d08020; }
+  .signal-card.intuition .response-line { color: #2e7d8a; }
+
+  /* Q vs S exercise */
+  .qs-items { margin: 16px 0; }
+
+  .qs-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    border: 2px solid #e9ecef;
+  }
+
+  .qs-item .thought-text {
+    font-style: italic;
+    color: #203445;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .qs-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .qs-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 2px solid;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: white;
+    transition: all 0.2s;
+  }
+
+  .qs-btn.q-btn { border-color: #f0a030; color: #d08020; }
+  .qs-btn.s-btn { border-color: #5da0af; color: #2e7d8a; }
+  .qs-btn.q-btn:hover, .qs-btn.q-btn.selected { background: #f0a030; color: white; }
+  .qs-btn.s-btn:hover, .qs-btn.s-btn.selected { background: #5da0af; color: white; }
+
+  .qs-feedback {
+    display: none;
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    border-left: 4px solid;
+  }
+
+  .qs-feedback.anxiety-fb   { background: #fff8ee; border-color: #f0a030; color: #203445; }
+  .qs-feedback.intuition-fb { background: #f0f9f4; border-color: #5da0af; color: #203445; }
+  .qs-feedback.nuance-fb    { background: #fef9f2; border-color: #dfb852; color: #203445; }
+
+  /* Framework */
+  .framework-steps { margin: 20px 0; }
+
+  .framework-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+
+  .framework-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #5da0af;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .framework-content strong { display: block; color: #203445; font-size: 0.95rem; margin-bottom: 4px; }
+  .framework-content p { font-size: 0.875rem; color: #555; margin: 0; line-height: 1.6; }
+  .framework-arrow { text-align: center; color: #adb5bd; font-size: 1.2rem; margin: -8px 0 10px 54px; }
+
+  /* Video placeholder */
+  .video-placeholder {
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 36px 20px;
+    text-align: center;
+    margin: 24px 0;
+  }
+
+  .video-placeholder .vp-icon  { font-size: 2.5rem; margin-bottom: 10px; }
+  .video-placeholder .vp-label { font-weight: 700; color: #6c757d; font-size: 1rem; margin-bottom: 6px; }
+  .video-placeholder .vp-note  { font-size: 0.8rem; color: #adb5bd; font-style: italic; margin: 0; }
+
+  /* Scenarios */
+  .scenario-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    border: 2px solid #e9ecef;
+  }
+
+  .scenario-item .scenario-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6c757d;
+    margin-bottom: 6px;
+  }
+
+  .scenario-item .scenario-text {
+    font-style: italic;
+    color: #203445;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+  }
+
+  .scenario-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .sc-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: white;
+    transition: all 0.2s;
+  }
+
+  .sc-btn.fear-btn      { border-color: #e05c5c; color: #c0392b; }
+  .sc-btn.anxiety-btn   { border-color: #f0a030; color: #d08020; }
+  .sc-btn.intuition-btn { border-color: #5da0af; color: #2e7d8a; }
+
+  .sc-btn.fear-btn.selected      { background: #e05c5c; color: white; }
+  .sc-btn.anxiety-btn.selected   { background: #f0a030; color: white; }
+  .sc-btn.intuition-btn.selected { background: #5da0af; color: white; }
+
+  .sc-feedback {
+    display: none;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    border-left: 4px solid #5da0af;
+    background: #e8f4f6;
+    color: #203445;
+  }
+
+  /* Reflection */
+  .reflection-box {
+    border-left: 4px solid #d56439;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 24px;
+    margin: 16px 0;
+  }
+
+  .prompt-q    { font-weight: 700; color: #203445; margin-bottom: 4px; font-size: 0.95rem; }
+  .timer-note  { font-size: 0.8rem; color: #6c757d; margin-bottom: 12px; }
+
+  .starter-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+
+  .starter-btn {
+    padding: 6px 12px;
+    background: white;
+    border: 1.5px solid #5da0af;
+    color: #5da0af;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .starter-btn:hover { background: #5da0af; color: white; }
+
+  textarea {
+    width: 100%;
+    min-height: 110px;
+    border: 1.5px solid #dee2e6;
+    border-radius: 6px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #203445;
+    resize: vertical;
+    line-height: 1.6;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus { outline: none; border-color: #5da0af; }
+  .private-note { font-size: 0.75rem; color: #adb5bd; margin-top: 6px; font-style: italic; }
+
+  /* Emotion check-in */
+  .emotion-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+
+  .emotion-btn {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 2px solid;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: white;
+    transition: all 0.2s;
+  }
+
+  .emotion-btn.teal   { border-color: #5da0af; color: #2e7d8a; }
+  .emotion-btn.gold   { border-color: #dfb852; color: #b8861a; }
+  .emotion-btn.green  { border-color: #acc95d; color: #6a8a30; }
+  .emotion-btn.orange { border-color: #f0a030; color: #c07810; }
+
+  .emotion-btn.teal.selected   { background: #5da0af; color: white; }
+  .emotion-btn.gold.selected   { background: #dfb852; color: white; }
+  .emotion-btn.green.selected  { background: #acc95d; color: white; }
+  .emotion-btn.orange.selected { background: #f0a030; color: white; }
+
+  .emotion-validation {
+    display: none;
+    padding: 14px 16px;
+    background: #e8f4f6;
+    border-radius: 6px;
+    margin-top: 12px;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #203445;
+    border-left: 4px solid #5da0af;
+  }
+
+  .emotion-validation.visible { display: block; animation: fadeIn 0.3s ease; }
+
+  /* Practice */
+  .practice-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 4px solid #acc95d;
+  }
+
+  .practice-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+  .practice-text { font-size: 0.9rem; line-height: 1.6; color: #333; }
+  .practice-text strong { color: #203445; display: block; margin-bottom: 3px; }
+
+  /* Affirmation */
+  .affirmation-box {
+    background: linear-gradient(135deg, #e8f4f6, #f0f9f4);
+    border-radius: 8px;
+    padding: 28px 24px;
+    text-align: center;
+    margin: 24px 0 8px;
+  }
+
+  .affirmation-box .aff-icon { font-size: 2rem; margin-bottom: 12px; }
+  .affirmation-box p { font-size: 1rem; line-height: 1.8; color: #203445; font-style: italic; margin: 0; }
+
+  /* Completion */
+  .completion-wrap { text-align: center; padding: 16px 0 8px; }
+  .completion-wrap .big-check { font-size: 3rem; margin-bottom: 12px; }
+  .completion-wrap h2 { color: #5da0af; }
+
+  /* Nav */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 28px;
+    border-top: 1px solid #e9ecef;
+    margin-top: 28px;
+  }
+
+  .btn-nav {
+    padding: 11px 26px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-prev { background: #f8f9fa; color: #6c757d; border: 1.5px solid #dee2e6; }
+  .btn-prev:hover { background: #e9ecef; }
+  .btn-next { background: #5da0af; color: white; }
+  .btn-next:hover { background: #4a8a9a; transform: translateY(-1px); }
+  .btn-complete { background: linear-gradient(135deg, #5da0af, #acc95d); color: white; padding: 12px 32px; }
+  .btn-complete:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  @media (max-width: 600px) {
+    .card-header, .step-section { padding: 24px 20px; }
+    .progress-wrap { padding: 12px 20px 0; }
+    h1 { font-size: 1.4rem; }
+    .mt-card { grid-template-columns: 1fr; }
+    .mt-myth { border-right: none; border-bottom: 1px solid #e9ecef; }
+    .scenario-buttons, .qs-buttons { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="card-header">
+    <h1>The Signal Behind the Noise</h1>
+    <p class="subtitle">Understanding Fear, Anxiety &amp; Intuition in Your Job Search</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progressFill" style="width:10%"></div>
+    </div>
+    <p class="progress-label" id="progressLabel">Step 1 of 10</p>
+  </div>
+
+  <!-- ============================================================
+       STEP 1 — Emotion Check-In
+  ============================================================ -->
+  <div class="step-section active" id="step-1">
+    <div style="border-left: 4px solid #5da0af; background: #e8f4f6; padding: 18px 20px; border-radius: 6px; margin: 0 0 20px;">
+      <strong>Building on Module 3</strong>
+      <p style="margin: 8px 0 0;">In the last module, you practiced self-compassion — turning toward yourself with the same care you'd offer someone else. You learned that the harsh inner critic isn't the truth; it's a wound. Today, we take that foundation one step further into how your body communicates when the mind is overwhelmed.</p>
+    </div>
+    <h2>How are you arriving today?</h2>
+    <p>Before we begin, take a moment to check in with yourself. You don't have to be okay. You just have to be honest.</p>
+    <p>Select everything that feels true right now.</p>
+
+    <div class="emotion-grid">
+      <button class="emotion-btn teal"   onclick="selectEmotion(this,'teal',1)">Uncertain</button>
+      <button class="emotion-btn teal"   onclick="selectEmotion(this,'teal',1)">Numb</button>
+      <button class="emotion-btn teal"   onclick="selectEmotion(this,'teal',1)">Disconnected</button>
+      <button class="emotion-btn teal"   onclick="selectEmotion(this,'teal',1)">Stuck</button>
+      <button class="emotion-btn teal"   onclick="selectEmotion(this,'teal',1)">Guarded</button>
+      <button class="emotion-btn orange" onclick="selectEmotion(this,'orange',1)">Anxious</button>
+      <button class="emotion-btn orange" onclick="selectEmotion(this,'orange',1)">Overwhelmed</button>
+      <button class="emotion-btn orange" onclick="selectEmotion(this,'orange',1)">On edge</button>
+      <button class="emotion-btn gold"   onclick="selectEmotion(this,'gold',1)">Curious</button>
+      <button class="emotion-btn gold"   onclick="selectEmotion(this,'gold',1)">Hopeful</button>
+      <button class="emotion-btn green"  onclick="selectEmotion(this,'green',1)">Calm</button>
+      <button class="emotion-btn green"  onclick="selectEmotion(this,'green',1)">Grounded</button>
+    </div>
+
+    <div class="emotion-validation" id="emotionValidation1"></div>
+
+    <div class="nav-row">
+      <span></span>
+      <button class="btn-nav btn-next" onclick="goTo(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STEP 2 — Does This Sound Familiar? (Checkbox Inventory)
+  ============================================================ -->
+  <div class="step-section" id="step-2">
+    <h2>Does any of this sound familiar?</h2>
+    <p>Job loss doesn't just change your circumstances. It changes the way you hear yourself. See if any of these land.</p>
+
+    
+
+    <p>Check anything that feels true — even a little.</p>
+
+    <div class="checkbox-list" id="checkboxList">
+
+      <label class="checkbox-item" onclick="handleCheck(this)">
+        <input type="checkbox">
+        <div>
+          <span class="item-label">I talk myself out of my own hesitation</span>
+          <span class="item-desc">"I tell myself I'm probably just being anxious" — and then later realize I was right the first time.</span>
+        </div>
+      </label>
+
+      <label class="checkbox-item" onclick="handleCheck(this)">
+        <input type="checkbox">
+        <div>
+          <span class="item-label">I apply to jobs that feel wrong</span>
+          <span class="item-desc">Something says no, but I can't tell if that's wisdom or fear of trying — so I apply anyway and feel hollow about it.</span>
+        </div>
+      </label>
+
+      <label class="checkbox-item" onclick="handleCheck(this)">
+        <input type="checkbox">
+        <div>
+          <span class="item-label">I can't tell if rest is okay or if I'm giving up</span>
+          <span class="item-desc">Every time I stop, a voice says I'm falling behind. I can't find the line between self-care and avoidance.</span>
+        </div>
+      </label>
+
+      <label class="checkbox-item" onclick="handleCheck(this)">
+        <input type="checkbox">
+        <div>
+          <span class="item-label">I override my gut to keep the peace</span>
+          <span class="item-desc">I agree to things — interviews, timelines, requests — that don't feel right, because saying no feels too risky.</span>
+        </div>
+      </label>
+
+      <label class="checkbox-item" onclick="handleCheck(this)">
+        <input type="checkbox">
+        <div>
+          <span class="item-label">I spiral instead of decide</span>
+          <span class="item-desc">When I need to make a call, I loop. The thinking never lands anywhere. I'm exhausted by my own mind.</span>
+        </div>
+      </label>
+
+      <label class="checkbox-item" onclick="handleCheck(this)">
+        <input type="checkbox">
+        <div>
+          <span class="item-label">I push through when my body is clearly saying stop</span>
+          <span class="item-desc">I've learned to outrun my own signals. I'm not sure I trust them anymore.</span>
+        </div>
+      </label>
+
+      <label class="checkbox-item" onclick="handleCheck(this)">
+        <input type="checkbox">
+        <div>
+          <span class="item-label">I mistake urgency for clarity</span>
+          <span class="item-desc">When something feels loud and urgent, I assume it must be important — but urgent and important aren't the same thing.</span>
+        </div>
+      </label>
+
+    </div>
+
+    <div class="check-reveal" id="checkReveal">
+      If you checked even one of these, this module is for you. This is what tangled signals look like in real life — not weakness, not confusion, not failure. It's what happens to a nervous system that has been working too hard for too long. There's a way through.
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-nav btn-prev" onclick="goTo(1)">← Back</button>
+      <button class="btn-nav btn-next" onclick="submitInventory()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STEP 3 — Why This Happens (Neuroscience + Myth/Truth)
+  ============================================================ -->
+  <div class="step-section" id="step-3">
+    <h2>Here's why — and it's not your fault</h2>
+
+    <p>When you go through traumatic job loss, your brain's threat-detection system doesn't just respond to the event — it stays on. Cortisol, the stress hormone, affects the prefrontal cortex — the part of your brain that helps you think clearly, trust yourself, and tell the difference between real danger and imagined danger.</p>
+
+    <p>Your window of tolerance narrows. Everything starts to feel like a signal worth worrying about. So of course fear, anxiety, and intuition get tangled. <strong>Your nervous system has been doing its best in an overwhelming situation.</strong> That's not a character flaw. That's neuroscience.</p>
+
+    
+
+    <div class="callout-quote">
+      "You are not broken. You are a person whose system has been running on high alert. Learning to read your signals again is not starting over — it's coming home to yourself."
+    </div>
+
+    <h3>Some beliefs that feel like wisdom — but aren't</h3>
+
+    <div class="myth-truth-cards">
+
+      <div class="mt-card">
+        <div class="mt-myth">
+          <div class="mt-label">❌ Sounds like wisdom</div>
+          <p>"If I feel this strongly about something, it must be true."</p>
+        </div>
+        <div class="mt-truth">
+          <div class="mt-label">✓ What's actually true</div>
+          <p>Strong feelings are data — but not always accurate data. Anxiety feels urgent and real. That doesn't make it wisdom. Intensity is not the same as truth.</p>
+        </div>
+      </div>
+
+      <div class="mt-card">
+        <div class="mt-myth">
+          <div class="mt-label">❌ Sounds like wisdom</div>
+          <p>"If I rest, I'm falling behind."</p>
+        </div>
+        <div class="mt-truth">
+          <div class="mt-label">✓ What's actually true</div>
+          <p>Rest is not absence of effort. Your nervous system literally cannot sustain a job search without recovery. Rest is how you stay in the game — not how you exit it.</p>
+        </div>
+      </div>
+
+      <div class="mt-card">
+        <div class="mt-myth">
+          <div class="mt-label">❌ Sounds like wisdom</div>
+          <p>"My hesitation means I'm being too picky or too scared."</p>
+        </div>
+        <div class="mt-truth">
+          <div class="mt-label">✓ What's actually true</div>
+          <p>Hesitation is information. It might be anxiety — or it might be intuition protecting you. The goal isn't to override it. The goal is to learn what it's actually saying.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-nav btn-prev" onclick="goTo(2)">← Back</button>
+      <button class="btn-nav btn-next" onclick="goTo(4)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STEP 4 — Meet the Three Signals
+  ============================================================ -->
+  <div class="step-section" id="step-4">
+    <h2>Meet the three signals</h2>
+    <p>Each one is real. Each one is useful. Each one requires a completely different response.</p>
+
+    <div class="signal-cards">
+
+      <div class="signal-card fear">
+        <div class="signal-card-top">
+          
+          <div class="signal-title">⚠️ Fear</div>
+        </div>
+        <p>Fear is a response to <strong>real, immediate physical danger.</strong> It is a life-saving mechanism — not a problem to manage.</p>
+        <ul>
+          <li>Present-focused — happening right now</li>
+          <li>Creates a full-body adrenaline response</li>
+          <li>Usually accurate: detecting something real</li>
+          <li>Example: a recruiter who is physically threatening or aggressive</li>
+        </ul>
+        <p class="response-line">→ Response: Immediate action. Listen to it.</p>
+      </div>
+
+      <div class="signal-card anxiety">
+        <div class="signal-card-top">
+          
+          <div class="signal-title">🌀 Anxiety</div>
+        </div>
+        <p>Anxiety is <strong>future-focused.</strong> It lives in the what-ifs, the worst-case scenarios, the loops that never resolve.</p>
+        <ul>
+          <li>Always about the future — not what's happening now</li>
+          <li>Speaks in questions: "What if I fail? What if they think I'm difficult?"</li>
+          <li>Repetitive and circular — it asks but never answers</li>
+          <li>Exhausting because your mind never lands</li>
+          <li>Example: "If I set this boundary, I'll never get another chance"</li>
+        </ul>
+        <p class="response-line">→ Response: Compassion + truth-checking.</p>
+      </div>
+
+      <div class="signal-card intuition">
+        <div class="signal-card-top">
+          
+          <div class="signal-title">✦ Intuition</div>
+        </div>
+        <p>Intuition is <strong>your body's wisdom.</strong> After trauma, it often comes back online before anything else does.</p>
+        <ul>
+          <li>Speaks in clear statements, not questions</li>
+          <li>Usually calm, brief, and specific</li>
+          <li>Not circular — it points toward what's true</li>
+          <li>Creates clarity and a quiet sense of relief</li>
+          <li>Example: "This role isn't aligned with my values." "This person is trustworthy."</li>
+        </ul>
+        <p class="response-line">→ Response: Trust it.</p>
+      </div>
+
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-nav btn-prev" onclick="goTo(3)">← Back</button>
+      <button class="btn-nav btn-next" onclick="goTo(5)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STEP 5 — Questions vs. Statements
+  ============================================================ -->
+  <div class="step-section" id="step-5">
+    <h2>The key distinction: questions vs. statements</h2>
+    <p>This single difference will help you most in the moment when you can't think clearly.</p>
+
+    <div class="key-concept">
+      <div class="concept-label">Core Principle</div>
+      <p><strong>Anxiety asks questions. Intuition makes statements.</strong><br><br>
+      Anxiety says: "What if I say no and they think I'm difficult?"<br>
+      Intuition says: "This doesn't feel right."<br><br>
+      One loops. The other lands.</p>
+    </div>
+
+    <p>There's one important nuance: <strong>sometimes anxiety sounds like a statement.</strong> "I'm going to fail." "I'm not good enough." These feel like knowing — but they're anxiety in disguise. The check: does your body feel calm and clear when you say it? If not, that's anxiety, not wisdom.</p>
+
+    <p>Practice below. Read each thought and identify what type of signal it is.</p>
+
+    <div class="qs-items">
+
+      <div class="qs-item" id="qs1">
+        <div class="thought-text">"What if I say no to this unpaid project and they never consider me again?"</div>
+        <div class="qs-buttons">
+          <button class="qs-btn q-btn" onclick="answerQS('qs1','anxiety','q')">Anxiety (question)</button>
+          <button class="qs-btn s-btn" onclick="answerQS('qs1','intuition','s')">Intuition (statement)</button>
+        </div>
+        <div class="qs-feedback anxiety-fb" id="qs1-fb">
+          ✓ That's anxiety. Notice the "what if" — future-focused and circular. It can't be answered, only soothed. Try truth-checking: Is this actually likely? What do I know to be true right now?
+        </div>
+      </div>
+
+      <div class="qs-item" id="qs2">
+        <div class="thought-text">"This role isn't aligned with where I'm trying to go."</div>
+        <div class="qs-buttons">
+          <button class="qs-btn q-btn" onclick="answerQS('qs2','anxiety','q')">Anxiety (question)</button>
+          <button class="qs-btn s-btn" onclick="answerQS('qs2','intuition','s')">Intuition (statement)</button>
+        </div>
+        <div class="qs-feedback intuition-fb" id="qs2-fb">
+          ✓ That's intuition. A clear statement — calm and specific. No loop, no spiral. Just a quiet knowing. Notice how it feels different in the body than a "what if."
+        </div>
+      </div>
+
+      <div class="qs-item" id="qs3">
+        <div class="thought-text">"I'm going to mess this up. I always do."</div>
+        <div class="qs-buttons">
+          <button class="qs-btn q-btn" onclick="answerQS('qs3','anxiety','q')">Anxiety (statement)</button>
+          <button class="qs-btn s-btn" onclick="answerQS('qs3','intuition','s')">Intuition (statement)</button>
+        </div>
+        <div class="qs-feedback nuance-fb" id="qs3-fb">
+          ✓ This is the important nuance. It sounds like a statement — but it's anxiety in disguise. Ask yourself: does my body feel calm and clear when I say this? Almost certainly not. True intuition doesn't attack or generalize. It informs.
+        </div>
+      </div>
+
+      <div class="qs-item" id="qs4">
+        <div class="thought-text">"What if taking this weekend off means I fall behind and miss my window?"</div>
+        <div class="qs-buttons">
+          <button class="qs-btn q-btn" onclick="answerQS('qs4','anxiety','q')">Anxiety (question)</button>
+          <button class="qs-btn s-btn" onclick="answerQS('qs4','intuition','s')">Intuition (statement)</button>
+        </div>
+        <div class="qs-feedback anxiety-fb" id="qs4-fb">
+          ✓ Anxiety again. "What if" + worst case + urgency. Your nervous system is trying to protect you by keeping you moving — but rest is productive. Truth-check: Is there evidence this is true?
+        </div>
+      </div>
+
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-nav btn-prev" onclick="goTo(4)">← Back</button>
+      <button class="btn-nav btn-next" onclick="goTo(6)">Continue →</button>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       STEP 6 — Wise Mind
+  ============================================================ -->
+  <div class="step-section" id="step-6">
+    <h2>Wise Mind: where knowledge meets knowing</h2>
+    <p>DBT has a name for the state where real discernment lives. It's called <strong>Wise Mind</strong> — and it's exactly what you've been practicing in this module.</p>
+
+    <div class="key-concept">
+      <div class="concept-label">Core Concept</div>
+      <p>According to DBT, we each have three states of mind:</p>
+      <p><strong>Emotion Mind</strong> — driven entirely by feelings. Reactive, urgent, all-or-nothing. When you're in Emotion Mind, feelings feel like facts.</p>
+      <p><strong>Reasonable Mind</strong> — driven entirely by logic and data. Rational but cold. Dismisses what the body knows. Tells you a job offer is objectively good — even when something inside you says it's wrong.</p>
+      <p><strong>Wise Mind</strong> — the integration of both. It's calm. It's clear. It holds both your feelings <em>and</em> the facts, and it speaks in statements, not spirals.</p>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #203445, #2d6b7a); color: white; padding: 24px; border-radius: 8px; margin: 24px 0;">
+      <h3 style="color: white; margin-bottom: 16px;">What this looks like in your job search</h3>
+      <div style="display: grid; gap: 16px;">
+        <div style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 16px;">
+          <div style="color: #d56439; font-weight: 700; margin-bottom: 6px;">Emotion Mind says:</div>
+          <div style="color: rgba(255,255,255,0.9); font-style: italic;">"I have to take this offer. I can't say no. What if nothing else comes? I'll regret this forever."</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 16px;">
+          <div style="color: #acc95d; font-weight: 700; margin-bottom: 6px;">Reasonable Mind says:</div>
+          <div style="color: rgba(255,255,255,0.9); font-style: italic;">"The salary is within range. The commute is manageable. The company has decent reviews. Objectively, this is fine."</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.12); border-radius: 6px; padding: 16px; border: 1px solid rgba(93,160,175,0.5);">
+          <div style="color: #5da0af; font-weight: 700; margin-bottom: 6px;">Wise Mind says:</div>
+          <div style="color: rgba(255,255,255,0.9); font-style: italic;">"The numbers work. And something still feels off about the culture. I'm going to ask for more time before I decide."</div>
+        </div>
+      </div>
+    </div>
+
+    <p>Notice that Wise Mind doesn't ignore the feelings — and it doesn't dismiss the facts. It holds both, stays grounded, and speaks in calm, clear statements. That's intuition working at its best.</p>
+
+    <div style="border-left: 4px solid #5da0af; background: #e8f4f6; padding: 16px 20px; border-radius: 6px; margin: 20px 0;">
+      <p style="margin: 0;"><strong>One important thing:</strong> Wise Mind is easiest to access when your nervous system is inside your window of tolerance — not flooded, not shut down. If you're in fight-or-flight or collapse, Emotion Mind or Reasonable Mind will take over. This is why the regulation work from Module 2 isn't separate from decision-making — it's the foundation of it.</p>
+    </div>
+
+    <div class="reflection-box" style="margin-top: 24px;">
+      <div class="prompt-q">Think of a decision you're currently sitting with in your job search. What is each mind telling you?</div>
+      <div class="timer-note">There are no right answers. This is just about noticing.</div>
+      <div class="starter-buttons">
+        <button class="starter-btn" onclick="addStarter('reflectWM','Emotion Mind is telling me...')">Emotion Mind is telling me...</button>
+        <button class="starter-btn" onclick="addStarter('reflectWM','Reasonable Mind is telling me...')">Reasonable Mind is telling me...</button>
+        <button class="starter-btn" onclick="addStarter('reflectWM','When I get quiet, Wise Mind says...')">When I get quiet, Wise Mind says...</button>
+      </div>
+      <textarea id="reflectWM" placeholder="You don't need to share this with anyone. This is just for you."></textarea>
+      <p class="private-note">Your reflections are saved privately on your device only.</p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-nav btn-prev" onclick="goTo(5)">← Back</button>
+      <button class="btn-nav btn-next" onclick="goTo(8)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STEP 7 — The 3-Question Framework
+  ============================================================ -->
+  <div class="step-section" id="step-7">
+    <h2>The three-question framework</h2>
+    <p>When you get a signal and you're not sure what it is, pause and move through these three questions in order. You don't need to think hard. Just notice.</p>
+
+    <div class="framework-steps">
+
+      <div class="framework-step">
+        <div class="framework-num">1</div>
+        <div class="framework-content">
+          <strong>Am I in immediate physical danger right now?</strong>
+          <p>Not "could something bad happen?" — right now, in this moment, is there a real physical threat?<br>
+          <span style="color:#c0392b;font-weight:600;">If yes → Fear. Act immediately. Trust it completely.</span><br>
+          If no → move to question 2.</p>
+        </div>
+      </div>
+
+      <div class="framework-arrow">↓</div>
+
+      <div class="framework-step">
+        <div class="framework-num">2</div>
+        <div class="framework-content">
+          <strong>Am I asking questions or making statements?</strong>
+          <p>"What if...?" loops → that's anxiety.<br>
+          "This feels wrong." / "I need to stop." → move to question 3.<br>
+          <span style="color:#d08020;font-weight:600;">If you're in questions → Anxiety. Respond with compassion, not action.</span></p>
+        </div>
+      </div>
+
+      <div class="framework-arrow">↓</div>
+
+      <div class="framework-step">
+        <div class="framework-num">3</div>
+        <div class="framework-content">
+          <strong>Does this signal create energy or drain it?</strong>
+          <p>Intuition creates clarity — even when uncomfortable, there's relief underneath.<br>
+          Anxiety drains through circular thinking that never resolves.<br>
+          <span style="color:#2e7d8a;font-weight:600;">If it creates clarity → Intuition. Trust it.</span></p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout-quote">
+      "When you can tell the difference between fear, anxiety, and intuition, you can stop overriding your wisdom and stop being controlled by worry. That's the discernment that changes your life."
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-nav btn-prev" onclick="goTo(6)">← Back</button>
+      <button class="btn-nav btn-next" onclick="goTo(8)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STEP 7 — Video Placeholder
+  ============================================================ -->
+  <div class="step-section" id="step-8">
+    <h2>Before we practice — a moment to land</h2>
+    <p>You've just learned a new framework. Before you use it, let's take a moment to bring your nervous system along with you. Cognitive tools work best when your body is regulated enough to use them.</p>
+
+    <!-- Reset Tool: Name the Inner Voice -->
+    <div style="background: linear-gradient(135deg, #203445, #2d5068); border-radius: 10px; padding: 24px; margin: 24px 0;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <span style="font-size: 1.1rem;">🎬</span>
+        <span style="color: #acc95d; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Unbroken Reset Tool</span>
+      </div>
+      <h3 style="color: white; margin: 0 0 10px;">Name the Inner Voice</h3>
+      <p style="color: rgba(255,255,255,0.8); font-size: 0.95rem; margin-bottom: 18px;">This practice is part of the Unbroken Reset Tools library — a collection of short exercises you can return to anytime you need to regulate, reground, or get clear. You don't have to be in a module to use them.</p>
+      <a href="https://youtu.be/ObV0DHSlxDc" target="_blank" rel="noopener noreferrer"
+        style="display: inline-flex; align-items: center; gap: 12px; background: #d56439; color: white; padding: 14px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1rem;">
+        <span style="font-size: 1.3rem;">▶️</span> Watch on YouTube
+      </a>
+    </div>
+
+    <p>You have permission to take as long as you need here before moving on. There's no timer. There's no falling behind.</p>
+
+    <div class="nav-row">
+      <button class="btn-nav btn-prev" onclick="goTo(7)">← Back</button>
+      <button class="btn-nav btn-next" onclick="goTo(9)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STEP 8 — Practice Scenarios
+  ============================================================ -->
+  <div class="step-section" id="step-9">
+    <h2>Practice: What signal is this?</h2>
+    <p>Read each scenario. Use the three-question framework — or just your gut — to identify the signal. There are no trick questions. The goal is pattern recognition, not a grade.</p>
+
+    <div class="scenario-item" id="sc1">
+      <div class="scenario-label">Scenario 1</div>
+      <div class="scenario-text">"I got a job offer. The role looks good on paper but something keeps nagging at me. I keep thinking — what if I say no and regret it? What if this is the only offer I get? I can't stop going over it."</div>
+      <div class="scenario-buttons">
+        <button class="sc-btn fear-btn"      onclick="answerScenario('sc1','anxiety','fear')">Fear</button>
+        <button class="sc-btn anxiety-btn"   onclick="answerScenario('sc1','anxiety','anxiety')">Anxiety</button>
+        <button class="sc-btn intuition-btn" onclick="answerScenario('sc1','anxiety','intuition')">Intuition</button>
+      </div>
+      <div class="sc-feedback" id="sc1-fb">
+        The circular "what ifs" and the inability to land are anxiety's signature. The nagging feeling underneath might actually be intuition trying to get through — but the loop on top is anxiety. Truth-check: What do I actually know about this role? What does my body say when I imagine myself there six months from now?
+      </div>
+    </div>
+
+    <div class="scenario-item" id="sc2">
+      <div class="scenario-label">Scenario 2</div>
+      <div class="scenario-text">"I'm in a networking meeting and something just feels off about this person. I feel physically uncomfortable. I want to leave."</div>
+      <div class="scenario-buttons">
+        <button class="sc-btn fear-btn"      onclick="answerScenario('sc2','fear','fear')">Fear</button>
+        <button class="sc-btn anxiety-btn"   onclick="answerScenario('sc2','fear','anxiety')">Anxiety</button>
+        <button class="sc-btn intuition-btn" onclick="answerScenario('sc2','fear','intuition')">Intuition</button>
+      </div>
+      <div class="sc-feedback" id="sc2-fb">
+        This could be fear or intuition — and both deserve your attention. Physical discomfort in the presence of real threat is fear: act immediately. A clear calm knowing that something isn't right is intuition. Either way: you're not being too sensitive. You're not being judgmental. Listen to it.
+      </div>
+    </div>
+
+    <div class="scenario-item" id="sc3">
+      <div class="scenario-label">Scenario 3</div>
+      <div class="scenario-text">"I keep pushing myself to apply to more jobs even though I'm exhausted. My internal voice says if I stop, I'm not trying hard enough. I feel guilty every time I rest."</div>
+      <div class="scenario-buttons">
+        <button class="sc-btn fear-btn"      onclick="answerScenario('sc3','anxiety','fear')">Fear</button>
+        <button class="sc-btn anxiety-btn"   onclick="answerScenario('sc3','anxiety','anxiety')">Anxiety</button>
+        <button class="sc-btn intuition-btn" onclick="answerScenario('sc3','anxiety','intuition')">Intuition</button>
+      </div>
+      <div class="sc-feedback" id="sc3-fb">
+        This is anxiety — specifically the inner "pusher" part that learned to survive by driving you harder. It means well. It's trying to protect you. But it's not wisdom. Your body's actual signal — exhaustion — is the intuition. Rest is not laziness. Your nervous system needs it to keep going.
+      </div>
+    </div>
+
+    <div class="scenario-item" id="sc4">
+      <div class="scenario-label">Scenario 4</div>
+      <div class="scenario-text">"A recruiter asks me to do an unpaid trial project. Before I can even think about it, something in me is already clear: this doesn't work for me."</div>
+      <div class="scenario-buttons">
+        <button class="sc-btn fear-btn"      onclick="answerScenario('sc4','intuition','fear')">Fear</button>
+        <button class="sc-btn anxiety-btn"   onclick="answerScenario('sc4','intuition','anxiety')">Anxiety</button>
+        <button class="sc-btn intuition-btn" onclick="answerScenario('sc4','intuition','intuition')">Intuition</button>
+      </div>
+      <div class="sc-feedback" id="sc4-fb">
+        Intuition. Clear, calm, specific, immediate — no loop, no spiral. "This doesn't work for me" is a statement, not a question. Your body knew before your mind finished processing. That knowing is data. You can trust it.
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-nav btn-prev" onclick="goTo(8)">← Back</button>
+      <button class="btn-nav btn-next" onclick="goTo(10)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STEP 9 — Reflection Journal
+  ============================================================ -->
+  <div class="step-section" id="step-10">
+    <h2>Your reflection</h2>
+    <p>Take a few minutes with this before you move on. You've done real work today.</p>
+
+    <div class="reflection-box">
+      <div class="prompt-q">Think of a recent moment in your job search when you got a signal — something felt off, your body tightened, or something felt surprisingly clear. Looking back, what was it?</div>
+      <div class="timer-note">Take about 2–3 minutes. There's no right answer here.</div>
+      <div class="starter-buttons">
+        <button class="starter-btn" onclick="addStarter('reflect1','The signal I remember is...')">The signal I remember is...</button>
+        <button class="starter-btn" onclick="addStarter('reflect1','Looking back, I think it was...')">Looking back, I think it was...</button>
+        <button class="starter-btn" onclick="addStarter('reflect1','What my body was trying to tell me...')">What my body was trying to tell me...</button>
+        <button class="starter-btn" onclick="addStarter('reflect1','What I wish I had trusted...')">What I wish I had trusted...</button>
+      </div>
+      <textarea id="reflect1" placeholder="You don't need to share this with anyone. This is just for you."></textarea>
+      <p class="private-note">Your reflections are saved privately on your device only.</p>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-nav btn-prev" onclick="goTo(9)">← Back</button>
+      <button class="btn-nav btn-next" onclick="goTo(11)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STEP 10 — Practice This Week + Closing
+  ============================================================ -->
+  <div class="step-section" id="step-11">
+    <h2>Your practice this week</h2>
+
+    <div class="practice-item">
+      <div class="practice-icon">⏸️</div>
+      <div class="practice-text">
+        <strong>Use the three-question pause</strong>
+        When you notice a signal this week — a tightening, a discomfort, a pull — pause before responding. Ask: Am I in danger right now? Am I asking questions or making statements? Does this create energy or drain it? You don't have to get it right. Just practice noticing.
+      </div>
+    </div>
+
+    <div class="practice-item">
+      <div class="practice-icon">📝</div>
+      <div class="practice-text">
+        <strong>Catch one moment of intuition</strong>
+        When you notice a clear, calm knowing — even a small one — write it down as a statement. "This feels right." "This doesn't fit." "I need more time." The more you name it, the more you'll trust it.
+      </div>
+    </div>
+
+    <div class="affirmation-box">
+      <div class="aff-icon">✦</div>
+      <p>Your body has been working hard to protect you — even when the signals got confused. Learning to hear the difference between fear, anxiety, and intuition isn't about becoming more guarded. It's about becoming more free. You have wisdom in you that has survived everything you've been through. It's still there. You're learning to listen to it again.</p>
+    </div>
+
+    <h3 style="margin-top:24px;">How are you leaving this module?</h3>
+    <p style="font-size:0.9rem;color:#555;">Notice if anything has shifted, even slightly.</p>
+
+    <div class="emotion-grid">
+      <button class="emotion-btn teal"   onclick="selectEmotion(this,'teal',2)">Still processing</button>
+      <button class="emotion-btn teal"   onclick="selectEmotion(this,'teal',2)">Uncertain</button>
+      <button class="emotion-btn orange" onclick="selectEmotion(this,'orange',2)">A little activated</button>
+      <button class="emotion-btn gold"   onclick="selectEmotion(this,'gold',2)">Curious</button>
+      <button class="emotion-btn gold"   onclick="selectEmotion(this,'gold',2)">Seen</button>
+      <button class="emotion-btn green"  onclick="selectEmotion(this,'green',2)">Clearer</button>
+      <button class="emotion-btn green"  onclick="selectEmotion(this,'green',2)">Grounded</button>
+      <button class="emotion-btn green"  onclick="selectEmotion(this,'green',2)">Relieved</button>
+    </div>
+
+    <div class="emotion-validation" id="emotionValidation2"></div>
+
+    <div class="nav-row">
+      <button class="btn-nav btn-prev" onclick="goTo(10)">← Back</button>
+      <button class="btn-nav btn-complete" onclick="completeModule()">Complete Module ✓</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       COMPLETION SCREEN
+  ============================================================ -->
+  <div class="step-section" id="step-complete">
+    <div class="completion-wrap">
+      <div class="big-check">✦</div>
+      <h2>Module Complete</h2>
+      <p style="color:#6c757d;margin-top:8px;">The Signal Behind the Noise</p>
+    </div>
+
+    <!-- What You Explored -->
+    <div style="background: linear-gradient(135deg, #203445, #2d6b7a); color: white; padding: 24px; border-radius: 8px; margin: 24px 0;">
+      <h3 style="color: white; margin-bottom: 12px;">What You Explored</h3>
+      <ul style="color: rgba(255,255,255,0.9); padding-left: 20px; line-height: 2;">
+        <li>The difference between fear, anxiety, and intuition — and why they get tangled after job loss</li>
+        <li>How anxiety loops in questions while intuition speaks in clear, calm statements</li>
+        <li>The three-question pause you can use when signals are hard to read</li>
+        <li>How to practice building trust in your own body's wisdom again</li>
+      </ul>
+    </div>
+
+    <!-- Coming Up Next -->
+    <div style="background: #5da0af; color: white; padding: 24px; border-radius: 10px; margin: 24px 0;">
+      <h3 style="color: white; margin-bottom: 10px; font-size: 1.1rem;">🛡️ &nbsp;Coming Up Next: Understanding Boundaries</h3>
+      <p style="color: rgba(255,255,255,0.9); margin-bottom: 14px;">Now that you've built a foundation of self-compassion, you'll learn:</p>
+      <ul style="color: rgba(255,255,255,0.92); padding-left: 20px; line-height: 2; margin: 0;">
+        <li><strong>What boundaries actually are</strong> (and what they're not)</li>
+        <li><strong>Why saying no</strong> feels so hard—and how to do it anyway</li>
+        <li><strong>How to protect your energy</strong> while honoring your needs</li>
+      </ul>
+    </div>
+
+    <!-- PDF Download Card -->
+    <div style="background: linear-gradient(135deg, #203445, #2d5068); border-radius: 12px; padding: 28px 24px; margin: 24px 0; text-align: center;">
+      <div style="font-size: 2rem; margin-bottom: 10px;">📄</div>
+      <h3 style="color: white; margin: 0 0 8px; font-size: 1.1rem;">Save Your Reflections</h3>
+      <p style="color: rgba(255,255,255,0.82); font-size: 0.92rem; margin: 0 0 20px; line-height: 1.6;">Download a private copy of your responses to keep, revisit, or share with a therapist or coach.</p>
+      <button onclick="downloadReflections()" style="background: #5da0af; color: white; padding: 14px 32px; border-radius: 8px; border: none; font-weight: 700; font-size: 1rem; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;">
+        <span style="font-size:1.1rem;">⬇️</span> Download as PDF
+      </button>
+    </div>
+
+    <!-- Drop-in CTA -->
+    <div style="background: linear-gradient(135deg, #acc95d, #5da0af); color: white; padding: 32px 24px; border-radius: 12px; margin: 24px 0; text-align: center;">
+      <h3 style="color: white; margin-bottom: 12px; font-size: 1.2rem;">🌐 &nbsp;Need Support? Join Live Drop-In Sessions</h3>
+      <p style="color: rgba(255,255,255,0.92); margin-bottom: 22px; line-height: 1.7;">You don't have to process this alone. Join us for live drop-in support sessions where you can ask questions, share your experience, and connect with others on the same journey.</p>
+      <a href="https://www.unbrokenpathways.org/registration" target="_blank"
+        style="background: white; color: #203445; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1rem; display: inline-block;">
+        Register for Live Drop-In Support &rarr;
+      </a>
+    </div>
+  </div>
+
+</div><!-- /.card -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  // ─── Airtable Configuration ───────────────────────────────────────────────
+  const AIRTABLE_API_KEY  = 'YOUR_KEY_HERE';
+  const AIRTABLE_BASE_ID  = 'YOUR_BASE_ID_HERE';
+  const AIRTABLE_TABLE_NAME = 'Module 4 Data';
+
+  function getUserIdentifier() {
+    if (!sessionStorage.getItem('unbroken_session_id')) {
+      sessionStorage.setItem('unbroken_session_id', 'anon-' + Date.now());
+    }
+    return sessionStorage.getItem('unbroken_session_id');
+  }
+
+  async function sendToAirtable(fields) {
+    const payload = {
+      records: [{ fields: { 'User ID': getUserIdentifier(), 'Timestamp': new Date().toISOString(), ...fields } }]
+    };
+    try {
+      const res = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) showSavedIndicator();
+    } catch (e) { console.warn('Airtable sync failed:', e); }
+  }
+
+  function showSavedIndicator() {
+    let el = document.getElementById('airtable-saved');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'airtable-saved';
+      el.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#5da0af;color:white;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:9999;';
+      document.body.appendChild(el);
+    }
+    el.textContent = '✓ Saved';
+    el.style.opacity = '1';
+    setTimeout(() => { el.style.opacity = '0'; }, 2500);
+  }
+
+  function scrollToTop() {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    const container = document.querySelector('.card');
+    if (container) container.scrollTop = 0;
+  }
+
+  const TOTAL_STEPS = 11;
+
+  function goTo(n) {
+    document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + n).classList.add('active');
+    const pct = (n / TOTAL_STEPS) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = 'Step ' + n + ' of ' + TOTAL_STEPS;
+    setTimeout(scrollToTop, 50);
+  }
+
+  function completeModule() {
+    document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-complete').classList.add('active');
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('progressLabel').textContent = 'Complete ✓';
+    setTimeout(scrollToTop, 50);
+    sendCompletionData();
+  }
+
+  function sendCompletionData() {
+    sendToAirtable({
+      'Module': 'Module 4: The Signal Behind the Noise',
+      'Data Type': 'Module Completion',
+      'Completed At': new Date().toISOString(),
+    });
+  }
+
+  function submitInventory() {
+    const checked = [...document.querySelectorAll('#step-2 input[type="checkbox"]:checked')]
+      .map(cb => cb.closest('label') ? cb.closest('label').textContent.trim() : cb.value);
+    sendToAirtable({
+      'Module': 'Module 4: The Signal Behind the Noise',
+      'Data Type': 'Signal Inventory',
+      'Selections': checked.join(', '),
+      'Count': checked.length
+    });
+    goTo(3);
+  }
+
+  function downloadReflections() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text('UnBroken – Module 4 Reflections', 20, 20);
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text('The Signal Behind the Noise', 20, 30);
+    doc.setTextColor(0);
+    let y = 45;
+    const reflections = [
+      { label: 'Wise Mind reflection — a decision I am sitting with', id: 'reflectWM' },
+      { label: 'A signal I noticed in my job search', id: 'reflect1' },
+    ];
+    reflections.forEach(r => {
+      const val = document.getElementById(r.id)?.value || '(not answered)';
+      doc.setFont(undefined, 'bold');
+      doc.setFontSize(12);
+      doc.text(r.label, 20, y); y += 8;
+      doc.setFont(undefined, 'normal');
+      doc.setFontSize(11);
+      const lines = doc.splitTextToSize(val, 170);
+      doc.text(lines, 20, y);
+      y += lines.length * 7 + 10;
+    });
+    doc.save('unbroken-module4-reflections.pdf');
+  }
+
+  const emotionMessages = {
+    teal:   "That heaviness is real, and it makes complete sense given what you're navigating. You don't have to feel differently to begin. You just have to be here.",
+    orange: "Feeling activated or anxious right now is your nervous system doing its job — it's been on high alert for a while. That's not weakness. That's a system that's been working very hard. You're in the right place.",
+    gold:   "Curiosity and hope are signs your system is starting to open. Hold onto that. It's data too.",
+    green:  "A sense of calm or groundedness is a real resource. Notice it — you can return to it if things feel harder as we go."
+  };
+
+  function selectEmotion(btn, type, checkInNum) {
+    btn.classList.toggle('selected');
+    const validationId = checkInNum === 2 ? 'emotionValidation2' : 'emotionValidation1';
+    const validation = document.getElementById(validationId);
+    const anySelected = btn.closest('.emotion-grid').querySelector('.selected');
+    if (anySelected) {
+      validation.textContent = emotionMessages[type];
+      validation.classList.add('visible');
+    } else {
+      validation.classList.remove('visible');
+    }
+  }
+
+  let checkCount = 0;
+
+  function handleCheck(label) {
+    const cb = label.querySelector('input[type="checkbox"]');
+    // Let browser toggle the checkbox naturally, then read state
+    setTimeout(() => {
+      label.classList.toggle('checked', cb.checked);
+      checkCount = document.querySelectorAll('.checkbox-item input:checked').length;
+      const reveal = document.getElementById('checkReveal');
+      if (checkCount >= 1) {
+        reveal.classList.add('visible');
+      } else {
+        reveal.classList.remove('visible');
+      }
+    }, 0);
+  }
+
+  function answerQS(itemId, correct, chosen) {
+    document.querySelectorAll('#' + itemId + ' .qs-btn').forEach(b => b.classList.remove('selected'));
+    event.target.classList.add('selected');
+    document.getElementById(itemId + '-fb').style.display = 'block';
+  }
+
+  function answerScenario(itemId, correct, chosen) {
+    document.querySelectorAll('#' + itemId + ' .sc-btn').forEach(b => b.classList.remove('selected'));
+    event.target.classList.add('selected');
+    document.getElementById(itemId + '-fb').style.display = 'block';
+  }
+
+  function addStarter(textareaId, text) {
+    const ta = document.getElementById(textareaId);
+    if (ta.value && !ta.value.endsWith('\n')) ta.value += '\n';
+    ta.value += text + ' ';
+    ta.focus();
+  }
+</script>
+
+<footer style="text-align: center; padding: 24px 16px 32px; color: rgba(255,255,255,0.5); font-size: 0.8rem; line-height: 1.8;">
+  Created with care by Places to Thrive, Inc. &copy; 2025 &nbsp;|&nbsp; The UnBroken Project &nbsp;|&nbsp; <a href="https://unbrokenpathways.org" style="color: rgba(255,255,255,0.5); text-decoration: none;">unbrokenpathways.org</a>
+</footer>
+
+</body>
+</html>
